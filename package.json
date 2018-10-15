@@ -39,5 +39,8 @@
     "eslint-plugin-jest": "^21.24.1",
     "jest": "^23.6.0",
     "jest-cli": "^23.6.0"
+  },
+  "dependencies": {
+    "commander": "^2.19.0"
   }
 }

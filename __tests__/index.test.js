@@ -1,4 +1,4 @@
 import pageLoader from '../src';
 
-test('sum test', () => {
+test('pageLoader test', () => {
 });

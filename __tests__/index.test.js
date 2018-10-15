@@ -16,9 +16,7 @@ beforeAll(() => {
 
 test('pageLoader test', async () => {
   const expectedContent = fs.readFileSync(path.join(fixturesDir, 'example-com.html'));
-  const tempDir = path.join(os.tmpdir(), 'pageLoaderTmp');
-
-  fs.mkdtempSync(tempDir);
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'pageLoaderTmp-'));
 
   nock(url).get('/').reply(200, expectedContent);
 

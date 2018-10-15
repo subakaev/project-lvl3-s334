@@ -1,6 +1,6 @@
 import url from 'url';
 
-const getFolderNameFromUrl = (urlString) => {
+const getFileNameFromUrl = (urlString) => {
   const { protocol } = url.parse(urlString);
 
   return urlString
@@ -9,4 +9,4 @@ const getFolderNameFromUrl = (urlString) => {
     .concat('.html');
 };
 
-export default getFolderNameFromUrl;
+export default getFileNameFromUrl;

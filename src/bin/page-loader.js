@@ -10,6 +10,8 @@ program
   .arguments('<urlString>')
   .option('--output [path]', 'Output path')
   .action((urlString, cmd) => {
-    pageLoader(urlString, cmd.output);
+    pageLoader(urlString, cmd.output)
+      .then(() => console.log('Done.'))
+      .catch(err => console.log(err));
   })
   .parse(process.argv);

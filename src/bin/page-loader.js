@@ -10,7 +10,7 @@ program
   .arguments('<urlString>')
   .option('--output [path]', 'Output path')
   .action((urlString, cmd) => {
-    pageLoader(urlString, cmd.output)
+    pageLoader(urlString, cmd.output || __dirname)
       .then(() => console.log('Done.'))
       .catch(err => console.log(err));
   })

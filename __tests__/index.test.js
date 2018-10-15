@@ -22,6 +22,8 @@ test('pageLoader test', async () => {
 
   nock(host).get('/').reply(200, expectedContent);
 
+  expect.assertions(1);
+
   await pageLoader(host, tempDir);
 
   const actualData = await fsPromises.readFile(path.join(tempDir, 'example-com.html'));

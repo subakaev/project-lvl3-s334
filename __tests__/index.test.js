@@ -7,22 +7,24 @@ import os from 'os';
 
 import pageLoader from '../src';
 
+const fsPromises = fs.promises;
+
 const fixturesDir = '__tests__/__fixtures__';
-const url = 'http://example.com';
+const host = 'http://example.com';
 
 beforeAll(() => {
   axios.defaults.adapter = httpAdapter;
 });
 
 test('pageLoader test', async () => {
-  const expectedContent = fs.readFileSync(path.join(fixturesDir, 'example-com.html'));
-  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'pageLoaderTmp-'));
+  const expectedContent = await fsPromises.readFile(path.join(fixturesDir, 'example-com.html'));
+  const tempDir = await fsPromises.mkdtemp(path.join(os.tmpdir(), 'pageLoaderTmp-'));
 
-  nock(url).get('/').reply(200, expectedContent);
+  nock(host).get('/').reply(200, expectedContent);
 
-  await pageLoader(url, tempDir);
+  await pageLoader(host, tempDir);
 
-  const actualData = fs.readFileSync(path.join(tempDir, 'example-com.html'));
+  const actualData = await fsPromises.readFile(path.join(tempDir, 'example-com.html'));
 
   expect(actualData).toEqual(expectedContent);
 });

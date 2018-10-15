@@ -6,17 +6,9 @@ import getFileNameFromUrl from './utils';
 
 const fsPromises = fs.promises;
 
-export default (urlString, localPath) => {
-  return axios.get(urlString)
-    .then((response) => {
-      console.log(response);
-      return response.data;
-    }).then((data) => {
-      const fileName = getFileNameFromUrl(urlString);
-      const filePath = path.join(localPath, fileName);
+export default (urlString, localPath) => axios.get(urlString)
+  .then((response) => {
+    const filePath = path.join(localPath, getFileNameFromUrl(urlString));
 
-      fs.writeFileSync(filePath, data);
-
-      return true;
-    });
-};
+    return fsPromises.writeFile(filePath, response.data);
+  });

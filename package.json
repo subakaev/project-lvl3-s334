@@ -38,9 +38,11 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jest": "^21.24.1",
     "jest": "^23.6.0",
-    "jest-cli": "^23.6.0"
+    "jest-cli": "^23.6.0",
+    "nock": "^10.0.1"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "commander": "^2.19.0"
   }
 }

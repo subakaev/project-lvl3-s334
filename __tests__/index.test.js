@@ -22,8 +22,6 @@ test('page-loader should download without resources', async () => {
 
   nock(host).get('/').reply(200, expectedContent);
 
-  expect.assertions(1);
-
   await downloadPage(host, tempDir);
 
   const actualData = await fsPromises.readFile(path.join(tempDir, 'example-com.html'));

@@ -28,7 +28,7 @@ const getAttributeNameAndValue = (cheerioElement) => {
 const getOutputPath = (inputPath, contentsDir) => {
   const { dir, base } = path.parse(inputPath);
 
-  const outputFileName = `${dir.slice(1).replace(/[^A-Za-z0-9]/g, '-')}-${base}`;
+  const outputFileName = `${dir.slice(1).replace(/\W/g, '-')}-${base}`;
 
   return path.resolve(contentsDir, outputFileName);
 };

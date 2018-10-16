@@ -40,8 +40,6 @@ test('page-loader should download with resources', async () => {
 
   const tempDir = await fsPromises.mkdtemp(path.join(os.tmpdir(), 'pageLoaderTmp-'));
   const tempContentsDir = path.join(tempDir, 'example-com_files');
-  // await fsPromises.mkdir(tempContentsDir);
-  console.log(tempContentsDir);
 
   const contentsDir = path.join(fixturesDir, 'example-com-contents_files');
   const file1Path = path.join(contentsDir, 'styles-style.css');
@@ -76,15 +74,15 @@ test('page-loader should download with resources', async () => {
   const actualFile1Path = path.join(tempContentsDir, 'styles-style.css');
   const actualFile1Data = await fsPromises.readFile(actualFile1Path, 'utf8');
   expect(actualFile1Data).toEqual(file1Data);
-  
+
   const actualFile2Path = path.join(tempContentsDir, 'assets-script-in-head.js');
   const actualFile2Data = await fsPromises.readFile(actualFile2Path, 'utf8');
   expect(actualFile2Data).toEqual(file2Data);
-  
+
   const actualFile3Path = path.join(tempContentsDir, 'assets-script-in-body.js');
   const actualFile3Data = await fsPromises.readFile(actualFile3Path, 'utf8');
   expect(actualFile3Data).toEqual(file3Data);
-  
+
   const actualFile4Path = path.join(tempContentsDir, 'img-picture.png');
   const actualFile4Data = await fsPromises.readFile(actualFile4Path, 'utf8');
   expect(actualFile4Data).toEqual(file4Data);

@@ -8,86 +8,84 @@ import getFileNameFromUrl from './utils';
 
 const fsPromises = fs.promises;
 
-const getModifiedHtmlWithListOfFiles = (urlString, data) => {
-  const $ = cheerio.load(data);
+const getAttributeNameAndValue = (cheerioElement) => {
+  const elementNames = {
+    img: 'src',
+    script: 'src',
+    link: 'href',
+  };
 
-  const contentsFolder = '/' + getFileNameFromUrl(urlString).replace('.html', '') + '_files';
+  const attrName = elementNames[cheerioElement.name];
+  const attrValue = cheerioElement.attribs[attrName];
+
+  return {
+    attrName,
+    attrValue,
+    isLocalPath: () => url.parse(attrValue).host === null,
+  };
+};
+
+const getOutputPath = (inputPath, contentsDir) => {
+  const { dir, base } = path.parse(inputPath);
+
+  const outputFileName = `${dir.slice(1).replace(/[^A-Za-z0-9]/g, '-')}-${base}`;
+
+  return path.resolve(contentsDir, outputFileName);
+};
+
+const getHtmlWithListOfFiles = (urlString, contentsFolder, data) => {
+  const $ = cheerio.load(data);
 
   const fileList = [];
 
-  $('img,script').each((index, element) => {
-    const {src} = element.attribs;
+  $('img,script,link').each((_, element) => {
+    const { attrName, attrValue, isLocalPath } = getAttributeNameAndValue(element);
 
-    const { host } = url.parse(src);
+    if (isLocalPath()) {
+      const outputPath = getOutputPath(attrValue, contentsFolder);
 
-    if (!host) {
-      const { dir, base } = path.parse(src);
+      fileList.push({ inputPath: attrValue, outpuPath: `.${outputPath}` });
 
-      const newPath = path.resolve(contentsFolder, dir.slice(1).replace(/[^A-Za-z0-9]/g, '-').concat('-').concat(base));
-
-      fileList.push({ inputPath: src, outpuPath: `.${newPath}` });
-
-      $(element).attr('src', newPath);
+      $(element).attr(attrName, outputPath);
     }
-
-    console.log($(element).attr('src'));
-  });
-
-  $('link').each((index, element) => {
-    const {href} = element.attribs;
-
-    const { host } = url.parse(href);
-
-    if (!host) {
-      const { dir, base } = path.parse(href);
-
-      const newPath = path.resolve(contentsFolder, dir.slice(1).replace(/[^A-Za-z0-9]/g, '-').concat('-').concat(base));
-
-      fileList.push({ inputPath: href, outpuPath: `.${newPath}` });
-
-      $(element).attr('href', newPath);
-    }
-
-    console.log($(element).attr('href'));
   });
 
   return { html: $.html(), files: fileList };
 };
 
-const downloadFile = (urlString, localPath) => {
-  return axios.get(urlString).then(response => {
-    return fsPromises.writeFile(localPath, response.data);
-  });
+const downloadFile = (downloadUrl, savePath) => axios.get(downloadUrl, { responseType: 'arraybuffer' })
+  .then(response => fsPromises.writeFile(savePath, response.data));
+
+const getSaveRootPagePromise = (html, urlString, localPath) => {
+  const filePath = path.join(localPath, getFileNameFromUrl(urlString));
+
+  return fsPromises.writeFile(filePath, html);
 };
+
+const getSaveContentPromises = (list, localPath, { protocol, hostname, port }) => list.map(
+  (item) => {
+    const downloadUrl = url.format({
+      protocol,
+      hostname,
+      port,
+      pathname: item.inputPath,
+    });
+
+    const savePath = path.resolve(localPath, item.outpuPath);
+
+    return downloadFile(downloadUrl, savePath);
+  },
+);
 
 export default (urlString, localPath) => axios.get(urlString)
   .then((response) => {
-    const { html, files } = getModifiedHtmlWithListOfFiles(urlString, response.data);
+    const contentsFolder = `/${getFileNameFromUrl(urlString).replace('.html', '')}_files`;
 
-    console.log(files);
+    const { html, files } = getHtmlWithListOfFiles(urlString, contentsFolder, response.data);
 
-    const parsed = url.parse(urlString);
-    console.log(parsed);
+    const rootPromise = getSaveRootPagePromise(html, urlString, localPath);
 
-    const filePath = path.join(localPath, getFileNameFromUrl(urlString));
+    const filePromises = getSaveContentPromises(files, localPath, url.parse(urlString));
 
-    const filePromises = files.map((item) => {
-      const downloadUrl = url.format({
-        protocol: parsed.protocol,
-        hostname: parsed.hostname,
-        pathname: item.inputPath,
-      });
-
-      const savePath = path.resolve(localPath, item.outpuPath);
-
-      return axios.get(downloadUrl, { responseType: 'arraybuffer' })
-        .then((resp) => {
-          console.log(savePath);
-          const fileData = resp.data;// new Buffer(response.data, 'binary').toString('base64');
-          return fsPromises.writeFile(savePath, fileData)
-            .catch(err => console.log(err));
-        });
-    });
-
-    return Promise.all([fsPromises.writeFile(filePath, html), ...filePromises]);
+    return Promise.all([rootPromise, ...filePromises]);
   });

@@ -21,7 +21,7 @@ const getAttributeNameAndValue = (cheerioElement) => {
   return {
     attrName,
     attrValue,
-    isLocalPath: () => url.parse(attrValue).host === null,
+    isLocalPath: () => attrValue && url.parse(attrValue).host === null,
   };
 };
 

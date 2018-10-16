@@ -40,7 +40,7 @@ test('page-loader should download with resources', async () => {
 
   const tempDir = await fsPromises.mkdtemp(path.join(os.tmpdir(), 'pageLoaderTmp-'));
   const tempContentsDir = path.join(tempDir, 'example-com_files');
-  await fsPromises.mkdir(tempContentsDir);
+  // await fsPromises.mkdir(tempContentsDir);
   console.log(tempContentsDir);
 
   const contentsDir = path.join(fixturesDir, 'example-com-contents_files');

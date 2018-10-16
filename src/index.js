@@ -85,7 +85,9 @@ export default (urlString, localPath) => axios.get(urlString)
 
     const rootPromise = getSaveRootPagePromise(html, urlString, localPath);
 
+    const contentsDirPromise = fsPromises.mkdir(path.join(localPath, contentsFolder));
+
     const filePromises = getSaveContentPromises(files, localPath, url.parse(urlString));
 
-    return Promise.all([rootPromise, ...filePromises]);
+    return Promise.all([rootPromise, contentsDirPromise, ...filePromises]);
   });

@@ -5,7 +5,7 @@ import path from 'path';
 import fs from 'fs';
 import os from 'os';
 
-import pageLoader from '../src';
+import downloadPage from '../src';
 
 const fsPromises = fs.promises;
 
@@ -24,7 +24,7 @@ test('page-loader should download without resources', async () => {
 
   expect.assertions(1);
 
-  await pageLoader(host, tempDir);
+  await downloadPage(host, tempDir);
 
   const actualData = await fsPromises.readFile(path.join(tempDir, 'example-com.html'));
 
@@ -66,7 +66,7 @@ test('page-loader should download with resources', async () => {
     .get('/img/picture.png')
     .reply(200, file4Data);
 
-  await pageLoader(host, tempDir);
+  await downloadPage(host, tempDir);
 
   const actualHtml = await fsPromises.readFile(path.join(tempDir, 'example-com.html'), 'utf8');
   expect(actualHtml).toEqual(expectedHtml);

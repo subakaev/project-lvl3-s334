@@ -8,9 +8,9 @@ program
   .version('0.0.2')
   .description('The utility downloads the page and saves it to the local folder.')
   .arguments('<urlString>')
-  .option('--output [path]', 'Output path')
+  .option('--output [path]', 'Output path', __dirname)
   .action((urlString, cmd) => {
-    pageLoader(urlString, cmd.output || __dirname)
+    pageLoader(urlString, cmd.output)
       .then(() => console.log('Done.'))
       .catch(err => console.log(err));
   })

@@ -17,5 +17,8 @@ lint:
 test:
 	npm test
 
+test-debug:
+	DEBUG="page-loader:*" npm test
+
 test-coverage:
 	npm test -- --coverage

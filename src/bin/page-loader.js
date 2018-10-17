@@ -13,8 +13,8 @@ program
     pageLoader(urlString, cmd.output)
       .then(() => console.log('Download completed successfully.'))
       .catch((err) => {
-        console.log('Download completed with error:');
-        console.log(err);
+        console.error('Download completed with error:');
+        console.error(err);
       });
   })
   .parse(process.argv);

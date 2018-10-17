@@ -115,6 +115,5 @@ export default (urlString, localPath) => axios.get(urlString)
 
     return rootPromise
       .then(() => contentsDirPromise)
-      .then(() => Promise.all(filePromises))
-      .catch(err => logger(err));
+      .then(() => Promise.all(filePromises));
   });

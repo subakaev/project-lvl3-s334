@@ -1,6 +1,6 @@
 {
   "name": "page-loader",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "This is the page-loader Node.js project.",
   "bin": {
     "page-loader": "dist/bin/page-loader.js"

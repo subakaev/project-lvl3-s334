@@ -15,4 +15,4 @@ make build
 sudo npm link
 ```
 
-[![asciicast](https://asciinema.org/a/G3rqiy97X2CFNLSWUJr75zESM.png)](https://asciinema.org/a/G3rqiy97X2CFNLSWUJr75zESM)
+[![asciicast](https://asciinema.org/a/3iyffrTU2c6ZPF5CnyleGx7Hu.png)](https://asciinema.org/a/3iyffrTU2c6ZPF5CnyleGx7Hu)

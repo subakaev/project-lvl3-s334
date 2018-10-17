@@ -55,7 +55,7 @@ test('page-loader should download with resources', async () => {
   nock(host)
     .get('/')
     .reply(200, inputHtml)
-    .get('/styles/style.css')
+    .get('/styles.css')
     .reply(200, file1Data)
     .get('/assets/script-in-head.js')
     .reply(200, file2Data)
@@ -69,7 +69,7 @@ test('page-loader should download with resources', async () => {
   const actualHtml = await fsPromises.readFile(path.join(tempDir, 'example-com.html'), 'utf8');
   expect(actualHtml).toEqual(expectedHtml);
 
-  const actualFile1Path = path.join(tempContentsDir, 'styles-style.css');
+  const actualFile1Path = path.join(tempContentsDir, 'styles.css');
   const actualFile1Data = await fsPromises.readFile(actualFile1Path, 'utf8');
   expect(actualFile1Data).toEqual(file1Data);
 

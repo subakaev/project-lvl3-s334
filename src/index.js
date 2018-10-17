@@ -28,7 +28,7 @@ const getAttributeNameAndValue = (cheerioElement) => {
 const getOutputPath = (inputPath, contentsDir) => {
   const { dir, base } = path.parse(inputPath);
 
-  const outputFileName = `${dir.slice(1).replace(/\W/g, '-')}-${base}`;
+  const outputFileName = dir !== '/' ? `${dir.slice(1).replace(/\W/g, '-')}-${base}` : base;
 
   return path.resolve(contentsDir, outputFileName);
 };
@@ -42,9 +42,11 @@ const getHtmlWithListOfFiles = (urlString, contentsFolder, data) => {
     const { attrName, attrValue, isLocalPath } = getAttributeNameAndValue(element);
 
     if (isLocalPath()) {
-      const outputPath = getOutputPath(attrValue, contentsFolder);
+      const localPath = path.normalize(attrValue);
 
-      fileList.push({ inputPath: attrValue, outpuPath: `.${outputPath}` });
+      const outputPath = getOutputPath(localPath, contentsFolder);
+
+      fileList.push({ inputPath: localPath, outpuPath: `.${outputPath}` });
 
       $(element).attr(attrName, outputPath);
     }

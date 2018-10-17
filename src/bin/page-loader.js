@@ -11,7 +11,10 @@ program
   .option('--output [path]', 'Output path', __dirname)
   .action((urlString, cmd) => {
     pageLoader(urlString, cmd.output)
-      .then(() => console.log('Done.'))
-      .catch(err => console.log(err));
+      .then(() => console.log('Download completed successfully.'))
+      .catch((err) => {
+        console.log('Download completed with error:');
+        console.log(err);
+      });
   })
   .parse(process.argv);

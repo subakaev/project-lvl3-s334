@@ -1,12 +1,12 @@
 import url from 'url';
 
-const getFileNameFromUrl = (urlString) => {
+const getNameFromUrl = (urlString, postfix) => {
   const { protocol } = url.parse(urlString);
 
   return urlString
     .slice(`${protocol}//`.length)
     .replace(/\W/g, '-')
-    .concat('.html');
+    .concat(postfix);
 };
 
-export default getFileNameFromUrl;
+export default getNameFromUrl;

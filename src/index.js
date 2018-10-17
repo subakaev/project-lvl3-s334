@@ -4,7 +4,7 @@ import path from 'path';
 import url from 'url';
 import cheerio from 'cheerio';
 
-import getFileNameFromUrl from './utils';
+import getNameFromUrl from './utils';
 
 const fsPromises = fs.promises;
 
@@ -57,7 +57,7 @@ const downloadFile = (downloadUrl, savePath) => axios.get(downloadUrl, { respons
   .then(response => fsPromises.writeFile(savePath, response.data));
 
 const getSaveRootPagePromise = (html, urlString, localPath) => {
-  const filePath = path.join(localPath, getFileNameFromUrl(urlString));
+  const filePath = path.join(localPath, getNameFromUrl(urlString, '.html'));
 
   return fsPromises.writeFile(filePath, html);
 };
@@ -79,7 +79,7 @@ const getSaveContentPromises = (list, localPath, { protocol, hostname, port }) =
 
 export default (urlString, localPath) => axios.get(urlString)
   .then((response) => {
-    const contentsFolder = `/${getFileNameFromUrl(urlString).replace('.html', '')}_files`;
+    const contentsFolder = `/${getNameFromUrl(urlString, '_files')}`;
 
     const { html, files } = getHtmlWithListOfFiles(urlString, contentsFolder, response.data);
 

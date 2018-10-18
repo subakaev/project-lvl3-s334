@@ -31,3 +31,7 @@ Run in Debug mode
 ```
 
 [![asciicast](https://asciinema.org/a/f6DTsndrpXEq6HnnBLZ67laHO.png)](https://asciinema.org/a/f6DTsndrpXEq6HnnBLZ67laHO)
+
+# Error Handling Demo
+
+[![asciicast](https://asciinema.org/a/UdYh1Dmo7BJMyRxcB0aVE2vac.png)](https://asciinema.org/a/UdYh1Dmo7BJMyRxcB0aVE2vac)

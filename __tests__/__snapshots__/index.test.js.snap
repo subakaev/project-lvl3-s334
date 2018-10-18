@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should throw an exception with ENOENT code 1`] = `"ENOENT: no such file or directory, open '/wrong/dir/example-com.html'"`;
+
+exports[`should throw an exception with ENOTFOUND code if URL not exists 1`] = `undefined`;

@@ -90,11 +90,7 @@ test('page-loader should download with resources', async () => {
 test('should throw an exception with ENOTFOUND code if URL not exists', async () => {
   nock(host).get('/').replyWithError({ code: 'ENOTFOUND' });
 
-  try {
-    await downloadPage(host, 'It does not matter');
-  } catch (err) {
-    expect(err.code).toBe('ENOTFOUND');
-  }
+  await expect(downloadPage(host, 'It does not matter')).rejects.toThrowErrorMatchingSnapshot();
 });
 
 test('should throw an exception with ENOENT code', async () => {
@@ -102,9 +98,5 @@ test('should throw an exception with ENOENT code', async () => {
 
   nock(host).get('/').reply(200, expectedContent);
 
-  try {
-    await downloadPage(host, '/wrong/dir');
-  } catch (err) {
-    expect(err.code).toBe('ENOENT');
-  }
+  await expect(downloadPage(host, '/wrong/dir')).rejects.toThrowErrorMatchingSnapshot();
 });

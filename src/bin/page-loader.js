@@ -3,6 +3,7 @@
 import program from 'commander';
 
 import pageLoader from '..';
+import getErrorMessage from '../error-parser';
 
 program
   .version('0.0.3')
@@ -17,7 +18,7 @@ program
       })
       .catch((err) => {
         console.error('Download completed with error:');
-        console.error(err);
+        console.error(getErrorMessage(err));
         process.exit(1);
       });
   })

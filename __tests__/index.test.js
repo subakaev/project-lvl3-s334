@@ -14,6 +14,7 @@ const host = 'http://example.com';
 
 beforeAll(() => {
   axios.defaults.adapter = httpAdapter;
+  nock.disableNetConnect();
 });
 
 test('page-loader should download without resources', async () => {
@@ -84,4 +85,26 @@ test('page-loader should download with resources', async () => {
   const actualFile4Path = path.join(tempContentsDir, 'img-picture.png');
   const actualFile4Data = await fsPromises.readFile(actualFile4Path, 'utf8');
   expect(actualFile4Data).toEqual(file4Data);
+});
+
+test('should throw an exception with ENOTFOUND code if URL not exists', async () => {
+  nock(host).get('/').replyWithError({ code: 'ENOTFOUND' });
+
+  try {
+    await downloadPage(host, 'It does not matter');
+  } catch (err) {
+    expect(err.code).toBe('ENOTFOUND');
+  }
+});
+
+test('should throw an exception with ENOENT code', async () => {
+  const expectedContent = await fsPromises.readFile(path.join(fixturesDir, 'example-com.html'));
+
+  nock(host).get('/').reply(200, expectedContent);
+
+  try {
+    await downloadPage(host, '/wrong/dir');
+  } catch (err) {
+    expect(err.code).toBe('ENOENT');
+  }
 });

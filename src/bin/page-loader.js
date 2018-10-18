@@ -11,10 +11,14 @@ program
   .option('--output [path]', 'Output path', __dirname)
   .action((urlString, cmd) => {
     pageLoader(urlString, cmd.output)
-      .then(() => console.log('Download completed successfully.'))
+      .then(() => {
+        console.log('Download completed successfully.');
+        process.exit(0);
+      })
       .catch((err) => {
         console.error('Download completed with error:');
         console.error(err);
+        process.exit(1);
       });
   })
   .parse(process.argv);

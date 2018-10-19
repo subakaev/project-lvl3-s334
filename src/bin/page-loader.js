@@ -6,7 +6,7 @@ import pageLoader from '..';
 import getErrorMessage from '../error-parser';
 
 program
-  .version('0.0.4')
+  .version('0.0.5')
   .description('The utility downloads the page and saves it to the local folder.')
   .arguments('<urlString>')
   .option('--output [path]', 'Output path', __dirname)

@@ -1,10 +1,9 @@
 import url from 'url';
 
 const getNameFromUrl = (urlString, postfix) => {
-  const { protocol } = url.parse(urlString);
+  const { host, path } = url.parse(urlString);
 
-  return urlString
-    .slice(`${protocol}//`.length)
+  return `${host}${path === '/' ? '' : path}`
     .replace(/\W/g, '-')
     .concat(postfix);
 };

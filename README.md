@@ -20,7 +20,7 @@ Run
 ~$ page-loader --output <path-to-save> <download-url>
 ```
 
-[![asciicast](https://asciinema.org/a/3iyffrTU2c6ZPF5CnyleGx7Hu.png)](https://asciinema.org/a/3iyffrTU2c6ZPF5CnyleGx7Hu)
+[![asciicast](https://asciinema.org/a/YJgAbAAn4hFqGXUYtVpnVJxqo.png)](https://asciinema.org/a/YJgAbAAn4hFqGXUYtVpnVJxqo)
 
 # Debugging
 

@@ -4,6 +4,7 @@ import path from 'path';
 import url from 'url';
 import cheerio from 'cheerio';
 import debug from 'debug';
+import Listr from 'listr';
 
 import getNameFromUrl from './utils';
 
@@ -72,24 +73,22 @@ const getSaveRootPagePromise = (html, urlString, localPath) => {
   return fsPromises.writeFile(filePath, html);
 };
 
-const getSaveContentPromises = (list, localPath, { protocol, hostname, port }) => list.map(
-  (item) => {
-    const downloadUrl = url.format({
-      protocol,
-      hostname,
-      port,
-      pathname: item.inputPath,
-    });
+const getContentPromise = (item, localPath, { protocol, hostname, port }) => {
+  const downloadUrl = url.format({
+    protocol,
+    hostname,
+    port,
+    pathname: item.inputPath,
+  });
 
-    const savePath = path.resolve(localPath, item.outpuPath);
+  const savePath = path.resolve(localPath, item.outpuPath);
 
-    logger('Start downloading the file...');
-    logger('From: %s', downloadUrl);
-    logger('To: %s', savePath);
+  logger('Start downloading the file...');
+  logger('From: %s', downloadUrl);
+  logger('To: %s', savePath);
 
-    return downloadFile(downloadUrl, savePath);
-  },
-);
+  return downloadFile(downloadUrl, savePath);
+};
 
 const getCreateContentsFolderPromise = (pathname) => {
   logger('Creating dir for contents: "%s"', pathname);
@@ -103,17 +102,37 @@ export default (urlString, localPath) => axios.get(urlString)
 
     const { html, files } = getHtmlWithListOfFiles(contentsFolder, response.data);
 
-    const rootPromise = getSaveRootPagePromise(html, urlString, localPath);
+    const listr = new Listr([
+      {
+        title: `Download page from ${urlString}`,
+        task: () => getSaveRootPagePromise(html, urlString, localPath)
+          .then(() => {
+            if (files.length > 0) {
+              return getCreateContentsFolderPromise(path.join(localPath, contentsFolder));
+            }
 
-    const contentsDirPromise = getCreateContentsFolderPromise(path.join(localPath, contentsFolder));
+            return true;
+          }),
+      },
+      {
+        title: 'Downloading contents',
+        skip: () => {
+          if (files.length === 0) {
+            return 'No contents found';
+          }
 
-    const filePromises = getSaveContentPromises(files, localPath, url.parse(urlString));
+          return false;
+        },
+        task: () => {
+          const contentTasks = files.map(item => ({
+            title: `Downloading resource from ${item.inputPath}`,
+            task: () => getContentPromise(item, localPath, url.parse(urlString)),
+          }));
 
-    if (files.length === 0) {
-      return rootPromise;
-    }
+          return new Listr(contentTasks, { concurrent: true, exitOnError: true });
+        },
+      },
+    ]);
 
-    return rootPromise
-      .then(() => contentsDirPromise)
-      .then(() => Promise.all(filePromises));
+    return listr.run();
   });

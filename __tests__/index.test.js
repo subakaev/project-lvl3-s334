@@ -100,3 +100,19 @@ test('should throw an exception with ENOENT code', async () => {
 
   await expect(downloadPage(host, '/wrong/dir')).rejects.toThrowErrorMatchingSnapshot();
 });
+
+test('should throw an exception with EACCES code', async () => {
+  const expectedContent = await fsPromises.readFile(path.join(fixturesDir, 'example-com.html'));
+
+  nock(host).get('/').reply(200, expectedContent);
+
+  const tempDir = await fsPromises.mkdtemp(path.join(os.tmpdir(), 'pageLoaderTmp-'));
+
+  await fsPromises.chmod(tempDir, 444);
+
+  try {
+    await downloadPage(host, tempDir);
+  } catch (err) {
+    expect(err.code).toBe('EACCES');
+  }
+});

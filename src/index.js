@@ -105,34 +105,19 @@ export default (urlString, localPath) => axios.get(urlString)
     const listr = new Listr([
       {
         title: `Download page from ${urlString}`,
-        task: () => getSaveRootPagePromise(html, urlString, localPath)
-          .then(() => {
-            if (files.length > 0) {
-              return getCreateContentsFolderPromise(path.join(localPath, contentsFolder));
-            }
-
-            return true;
-          }),
+        task: () => getSaveRootPagePromise(html, urlString, localPath),
       },
-      {
-        title: 'Downloading contents',
-        skip: () => {
-          if (files.length === 0) {
-            return 'No contents found';
-          }
+    ], { concurrent: true });
 
-          return false;
-        },
-        task: () => {
-          const contentTasks = files.map(item => ({
-            title: `Downloading resource from ${item.inputPath}`,
-            task: () => getContentPromise(item, localPath, url.parse(urlString)),
-          }));
+    files.forEach(item => listr.add({
+      title: `Downloading resource from ${item.inputPath}`,
+      task: () => getContentPromise(item, localPath, url.parse(urlString)),
+    }));
 
-          return new Listr(contentTasks, { concurrent: true, exitOnError: true });
-        },
-      },
-    ]);
+    if (files.length > 0) {
+      return getCreateContentsFolderPromise(path.join(localPath, contentsFolder))
+        .then(() => listr.run());
+    }
 
     return listr.run();
   });

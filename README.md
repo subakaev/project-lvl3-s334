@@ -22,7 +22,7 @@ Run
 
 # Demo with listr spinners
 
-[![asciicast](https://asciinema.org/a/pZBEmA3H9VYXwTZfa9LnNsxqj.png)](https://asciinema.org/a/pZBEmA3H9VYXwTZfa9LnNsxqj)
+[![asciicast](https://asciinema.org/a/N8k21iQSzZCSho6KuGergm1AK.png)](https://asciinema.org/a/N8k21iQSzZCSho6KuGergm1AK)
 
 # Debugging
 
